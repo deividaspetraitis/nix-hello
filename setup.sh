@@ -1,10 +1,12 @@
 unset PATH
-for p in $buildInputs; do
-  export PATH=$p/bin${PATH:+:}$PATH
-done
+for p in $baseInputs $buildInputs; do
+  if [ -d $p/bin ]; then
+    export PATH="$p/bin${PATH:+:}$PATH"
+  fi
 
-for p in $baseInputs; do
-  export PATH=$p/bin${PATH:+:}$PATH
+  if [ -d $p/lib/pkgconfig ]; then
+    export PKG_CONFIG_PATH="$p/lib/pkgconfig${PKG_CONFIG_PATH:+:}$PKG_CONFIG_PATH"
+  fi
 done
 
 function unpackPhase() {
