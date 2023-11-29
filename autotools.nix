@@ -3,7 +3,7 @@ pkgs: attrs:
     builder = "${pkgs.bash}/bin/bash";
     args = [ ./builder.sh ];
     setup = ./setup.sh;
-    baseInputs = with pkgs; [ gnutar gzip gnumake clang coreutils gawk gnused gnugrep clang.bintools.bintools_bin ]; # will not work on other machines than Mac
+    baseInputs = with pkgs; [ gnutar gzip gnumake gcc coreutils gawk gnused gnugrep binutils.bintools patchelf findutils ];
     buildInputs = [];
     system = builtins.currentSystem;
   };
