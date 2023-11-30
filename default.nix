@@ -1,11 +1,15 @@
 let
-  pkgs = import <nixpkgs> {};
-  mkDerivation = import ./autotools.nix pkgs;
-in with pkgs; {
-  hello = import ./hello.nix { inherit mkDerivation; };
-  graphviz = import ./graphviz.nix { inherit mkDerivation lib gd pkg-config; };
-  graphvizCore = import ./graphviz.nix { 
-    inherit mkDerivation lib gd pkg-config;
-    gdSupport = false;
+  nixpkgs = import <nixpkgs> {};
+  allPkgs = nixpkgs // pkgs;
+  callPackage = path: overrides:
+    let f = import path;
+    in f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
+  pkgs = with nixpkgs; {
+    mkDerivation = import ./autotools.nix nixpkgs;
+    hello = callPackage ./hello.nix { };
+    graphviz = callPackage ./graphviz.nix { };
+    graphvizCore = import ./graphviz.nix { 
+      gdSupport = false;
+    };
   };
-}
+in pkgs
